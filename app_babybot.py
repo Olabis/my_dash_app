@@ -8,7 +8,7 @@ import pandas as pd
 
 # USERNAME_PASSWORD_PAIRS = [["Bimbim", ""], ["username", "password"]]
 
-df = pd.read_csv("C:/Users/Olabisi Oremade/Desktop/QU/df2babybot.csv")
+df = pd.read_csv("df2babybot.csv")
 
 print(df.head(10))
 
