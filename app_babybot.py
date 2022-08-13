@@ -17,7 +17,7 @@ server= app.server
 
 app.layout = html.Div(
     [
-        html.Div([dcc.Graph(id="our_graph")]),
+        # html.Div([dcc.Graph(id="our_graph")]),
         html.Div(
             [
                 html.Br(),
@@ -42,20 +42,28 @@ app.layout = html.Div(
                     persistence="string",
                     persistence_type="memory",
                 ),
+                dcc.RadioItems(id = 'graph-type',
+                            options = [{'label': 'Scatter plot', 'value': 'scatter'},
+                                      {'label': 'Line plot', 'value': 'line'}],
+                             value = 'line'),
             ]
         ),
+
+        html.Div([dcc.Graph(id="our_graph")])
     ]
 )
 
 
-@app.callback(Output("our_graph", "figure"), [Input("Continents", "value")])
-def update_figure(selected_continent):
+@app.callback(Output("our_graph", "figure"), [Input("Continents", "value"), Input("graph-type","value")])
+def update_figure(selected_continent,selected_graph):
 
     dff = df[(df["continent"] == selected_continent)]
     print(dff[:10])
 
-    fig = px.line(dff, x="country", y="prevalence", color="continent", height=600)
-    fig.update_layout(
+    if selected_graph == "line":
+
+        fig = px.line(dff, x="country", y="prevalence", color="continent", height=600)
+        fig.update_layout(
         yaxis={"title": "Prevalence (%)"},
         xaxis={"title": "Countries"},
         title={
@@ -64,7 +72,20 @@ def update_figure(selected_continent):
             "x": 0.5,
             "xanchor": "center",
         },
-    )
+
+    ),
+    else:
+        
+        fig = px.scatter(dff,x="country", y="prevalence", color="continent", height=600)
+        fig.update_layout(
+        yaxis={"title": "Prevalence (%)"},
+        xaxis={"title": "Countries"},
+        title={
+            "text": "Countries with depression in 2022",
+            "font": {"size": 28},
+            "x": 0.5,
+            "xanchor": "center",})
+
 
     return fig
 
